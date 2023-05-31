@@ -1,0 +1,16 @@
+[package]
+name = "volatile-bits"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [
+    "impl"
+]
+
+
+[dependencies]
+volatile-bits-impl = {path = "./impl"}
+
+[dev-dependencies]
+trybuild2 = "1.0.2"
