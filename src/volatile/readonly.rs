@@ -1,40 +1,32 @@
 use core::marker::PhantomData;
+use crate::volatile::config::Config;
 
-use crate::VolatileBitsReadable;
 
-pub struct VolatileBitsReadonly<Addr, Volatile> {
-    addr: Addr,
-    offset: usize,
-    bits: usize,
-    add_addr: usize,
-    _maker: PhantomData<Volatile>,
+#[derive(Debug)]
+pub struct VolatileReadonly<Addr, Volatile> {
+    config: Config<Addr>,
+    _marker: PhantomData<Volatile>,
 }
 
-impl<Addr, Volatile> VolatileBitsReadonly<Addr, Volatile> {
+impl<Addr, Volatile> VolatileReadonly<Addr, Volatile> {
     pub(crate) const fn new(
-        addr: Addr,
-        offset: usize,
-        bits: usize,
-        add_addr: usize,
-    ) -> VolatileBitsReadonly<Addr, Volatile> {
+        config: Config<Addr>
+    ) -> VolatileReadonly<Addr, Volatile> {
         Self {
-            addr,
-            offset,
-            bits,
-            add_addr,
-            _maker: PhantomData,
+            config,
+            _marker: PhantomData,
         }
     }
 }
 
 macro_rules! impl_readable_from_addr {
     ($addr: ty, $volatile: ty) => {
-        impl VolatileBitsReadable<$volatile> for VolatileBitsReadonly<$addr, $volatile>{
+        impl crate::VolatileBitsReadable<$volatile> for VolatileReadonly<$addr, $volatile>{
             fn read_volatile(&self) -> $volatile {
                 let max_bits = <$volatile>::BITS as usize;
-                let mask = <$volatile>::MAX >> (max_bits - self.bits);
+                let mask = <$volatile>::MAX >> (max_bits - self.config.bits());
 
-                let v = unsafe{core::ptr::read_volatile((self.addr + self.add_addr as $addr) as *const $volatile)} >> self.offset;
+                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr) as *const $volatile)} >> self.config.offset();
                 v & mask as $volatile
             }
         }
@@ -51,6 +43,7 @@ macro_rules! impl_readable {
         $(
             impl_readable_from_addr!($addr, u8);
             impl_readable_from_addr!($addr, u16);
+            impl_readable_from_addr!($addr, u32);
             impl_readable_from_addr!($addr, u64);
             impl_readable_from_addr!($addr, usize);
             impl_readable_from_addr!($addr, u128);
@@ -62,7 +55,7 @@ impl_readable!(u8, u16, u32, u64, usize, u128);
 
 #[cfg(test)]
 mod tests {
-    use crate::builder::Builder;
+    use crate::volatile::builder::Builder;
     use crate::VolatileBitsReadable;
 
     #[test]

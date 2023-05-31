@@ -10,7 +10,9 @@ members = [
 
 
 [dependencies]
-volatile-bits-impl = {path = "./impl"}
+volatile-bits-impl = { path = "./impl" }
+anyhow = {version = "1.0.71", default-features = false}
+
 
 [dev-dependencies]
 trybuild2 = "1.0.2"

@@ -15,8 +15,9 @@ pub fn expand_impl_volatile_writable(config: &VolatileBitsConfig) -> syn::Result
 
 fn expand_write_volatile() -> TokenStream2 {
     quote::quote! {
-        fn write_volatile(&self, new_val: u64){
-            unsafe{core::ptr::write_volatile(self.0 as *mut u64, new_val)}
+        fn write_volatile(&self, new_val: u64) -> anyhow::Result<()>{
+            unsafe{core::ptr::write_volatile(self.0 as *mut u64, new_val)};
+            Ok(())
         }
     }
 }
