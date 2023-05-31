@@ -25,9 +25,12 @@ fn expand_read_volatile(config: &VolatileBitsConfig) -> TokenStream2 {
 
     quote::quote! {
         fn read_volatile(&self) -> #volatile_ty{
-            let mask = #volatile_ty::MAX >> (#volatile_ty::BITS - #bits);
-            let v = unsafe{core::ptr::read_volatile((self.0 + #add) as *const #volatile_ty)} >> #offset;
-            v & mask
+            volatile_bits::volatile::Builder::new(self.0)
+                .add_addr(#add)
+                .bits(#bits as usize)
+                .offset(#offset)
+                .build_readonly::<#volatile_ty>()
+                .read_volatile()
         }
     }
 }

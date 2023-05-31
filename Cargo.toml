@@ -5,13 +5,13 @@ edition = "2021"
 
 [workspace]
 members = [
-    "impl"
+    "macros"
 ]
 
 
 [dependencies]
-volatile-bits-impl = { path = "./impl" }
-anyhow = {version = "1.0.71", default-features = false}
+volatile-bits-macros = { path = "macros" }
+anyhow = { version = "1.0.71", default-features = false }
 
 
 [dev-dependencies]

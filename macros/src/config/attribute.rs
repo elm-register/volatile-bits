@@ -34,10 +34,17 @@ impl Default for VolatileBitsAttribute {
 
 impl VolatileBitsAttribute {
     pub fn new(tokens: TokenStream2) -> Option<Self> {
-        let offset = parse_offset_token(tokens.clone()).unwrap_or(Literal::usize_unsuffixed(0));
-        let volatile_ty = parse_volatile_ty(tokens.clone()).unwrap_or(Ident::new("u64", Span::call_site()));
-        let bits = parse_bits(tokens.clone()).unwrap_or(volatile_ty_to_bits(&volatile_ty));
-        let add_address_bytes = parse_add(tokens).unwrap_or(Literal::usize_unsuffixed(0));
+        let offset = parse_offset_token(tokens.clone())
+            .unwrap_or(Literal::usize_unsuffixed(0));
+
+        let volatile_ty = parse_volatile_ty(tokens.clone())
+            .unwrap_or(Ident::new("u64", Span::call_site()));
+
+        let bits = parse_bits(tokens.clone())
+            .unwrap_or(volatile_ty_to_bits(&volatile_ty));
+
+        let add_address_bytes = parse_add(tokens)
+            .unwrap_or(Literal::usize_unsuffixed(0));
 
         Some(Self {
             offset,

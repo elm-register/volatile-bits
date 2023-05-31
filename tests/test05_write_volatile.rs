@@ -1,5 +1,5 @@
 use volatile_bits::{VolatileBitsReadable, VolatileBitsWritable};
-use volatile_bits_impl::volatile_bits;
+use volatile_bits::volatile_bits;
 
 #[volatile_bits]
 struct Bits(u64);

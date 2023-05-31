@@ -36,13 +36,16 @@ macro_rules! impl_write_only_from_addr {
         impl crate::VolatileBitsWritable<$volatile> for VolatileWriteOnly<$addr, $volatile>
             {
                 fn write_volatile(&self, new_val: $volatile) -> anyhow::Result<()> {
-                    let old_val = unsafe{core::ptr::read_volatile(self.config.addr() as *const $volatile)};
+
                     let mask = mask(<$volatile>::MAX as usize, <$volatile>::BITS as usize, self.config.bits(), self.config.offset())? as $volatile;
+                    let addr = self.config.addr() + self.config.add_addr() as $addr;
+
+                    let old_val = unsafe{core::ptr::read_volatile(addr as *const $volatile)};
                     let old_val_mask = old_val & mask;
 
                     let write_val = new_val.checked_shl(self.config.offset() as u32).ok_or(anyhow::anyhow!("Shl over flow!"))?;
 
-                    unsafe{core::ptr::write_volatile(self.config.addr() as *mut $volatile, write_val | old_val_mask);}
+                    unsafe{core::ptr::write_volatile(addr as *mut $volatile, write_val | old_val_mask);}
                     Ok(())
                 }
             }
@@ -133,7 +136,87 @@ mod tests {
         let r = builder
             .build_readonly::<u32>();
         assert_eq!(r.read_volatile(), 0b100);
-        
+
         assert_eq!(buff[0], 0b0100_1001);
+    }
+
+
+    #[test]
+    fn it_write_volatile_with_bits() {
+        let buff: [u32; 1] = [0b1111_1111; 1];
+
+        let w = Builder::new(buff.as_ptr() as u64)
+            .bits(3)
+            .build_write_only::<u32>();
+        w.write_volatile(0b000).unwrap();
+
+        assert_eq!(buff[0], 0b1111_1000);
+    }
+
+
+    #[test]
+    fn it_write_volatile_with_bits_and_offset() {
+        let buff: [u16; 1] = [0b1111_1111; 1];
+
+        let w = Builder::new(buff.as_ptr() as u64)
+            .offset(2)
+            .bits(3)
+            .build_write_only::<u16>();
+        w.write_volatile(0b000).unwrap();
+
+        assert_eq!(buff[0], 0b1110_0011);
+    }
+
+
+    #[test]
+    fn it_write_volatile_with_add_addr() {
+        let buff: [u8; 5] = [1, 2, 3, 4, 5];
+
+        let w = Builder::new(buff.as_ptr() as u64)
+            .add_addr(2)
+            .build_write_only::<u8>();
+
+        w.write_volatile(100).unwrap();
+
+        assert_eq!(buff[0], 1);
+        assert_eq!(buff[1], 2);
+        assert_eq!(buff[2], 100);
+        assert_eq!(buff[3], 4);
+        assert_eq!(buff[4], 5);
+    }
+
+
+    #[test]
+    fn it_write_volatile_with_all_options() {
+        let buff: [u8; 5] = [1, 2, 0b0000_0000, 4, 5];
+
+        let w = Builder::new(buff.as_ptr() as u64)
+            .add_addr(2)
+            .bits(3)
+            .offset(5)
+            .build_write_only::<u8>();
+
+        w.write_volatile(0b111).unwrap();
+
+        assert_eq!(buff[0], 1);
+        assert_eq!(buff[1], 2);
+        assert_eq!(buff[2], 0b1110_0000);
+        assert_eq!(buff[3], 4);
+        assert_eq!(buff[4], 5);
+    }
+
+
+    #[test]
+    fn it_write() {
+        let buff: [u8; 3] = [1, 0b1111_1111, 3];
+        let b = Builder::new(buff.as_ptr() as u64)
+            .offset(2)
+            .bits(3)
+            .add_addr(0x01)
+            .build_write_only::<u8>();
+
+        b.write_volatile(0b000).unwrap();
+     
+        assert_eq!(buff[1], 0b1110_0011)
     }
 }

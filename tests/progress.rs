@@ -11,4 +11,5 @@ fn it_works() {
     t.pass("tests/test07_read_volatile_type.rs");
     t.pass("tests/test08_read_volatile_with_bits.rs");
     t.pass("tests/test09_read_volatile_with_add_addr.rs");
+    t.pass("tests/test10_write_volatile_with_options.rs");
 }

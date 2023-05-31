@@ -12,7 +12,6 @@ mod derive_volatile_bits;
 
 #[proc_macro_attribute]
 pub fn volatile_bits(attributes: TokenStream, input: TokenStream) -> TokenStream {
-
     union(proc_macro2::TokenStream::from(input.clone()), force_expand_volatile_bits(input, attributes))
 }
 
