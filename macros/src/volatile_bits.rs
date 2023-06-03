@@ -2,8 +2,8 @@ use proc_macro::TokenStream;
 
 use syn::__private::TokenStream2;
 use syn::ItemStruct;
-use crate::volatile_bits::config::VolatileBitsConfig;
 
+use crate::volatile_bits::config::VolatileBitsConfig;
 use crate::volatile_bits::impl_self::expand_impl_struct;
 use crate::volatile_bits::impl_volatile_readable::expand_impl_volatile_readable;
 use crate::volatile_bits::impl_volatile_writable::expand_impl_volatile_writable;
@@ -33,3 +33,7 @@ fn expand_volatile_bits(item: TokenStream, attr_tokens: TokenStream2) -> syn::Re
         #impl_volatile_writable
     })
 }
+
+
+
+

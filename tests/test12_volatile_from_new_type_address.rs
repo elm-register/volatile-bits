@@ -17,7 +17,7 @@ struct Bits(Address);
 
 fn main() {
     let buff: [u8; 3] = [1, 0b1111_1111, 3];
-    let b = Bits::new_unchecked(Address::from(buff.as_ptr() as u64));
+    let b = Bits::from(Address::from(buff.as_ptr() as u64));
 
     b.write_volatile(0b000).unwrap();
 }

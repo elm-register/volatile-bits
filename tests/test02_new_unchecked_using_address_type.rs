@@ -8,6 +8,6 @@ struct U32Bits(u32);
 
 
 fn main() {
-    UsizeBits::new_unchecked(0xFFusize);
-    U32Bits::new_unchecked(0xFFu32);
+    let _ = UsizeBits::from(0xFFusize);
+    let _ = U32Bits::from(0xFFu32);
 }

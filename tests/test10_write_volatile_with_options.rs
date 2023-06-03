@@ -12,7 +12,7 @@ struct Bits(u64);
 
 fn main() {
     let buff: [u8; 3] = [1, 0b1111_1111, 3];
-    let b = Bits::new_unchecked(buff.as_ptr() as u64);
+    let b = Bits::from(buff.as_ptr() as u64);
 
     b.write_volatile(0b000).unwrap();
 }

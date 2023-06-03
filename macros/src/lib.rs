@@ -7,10 +7,12 @@ use proc_macro::TokenStream;
 use syn::__private::TokenStream2;
 
 use crate::volatile_address::expand_volatile_address;
+use crate::volatile_bit_field::expand_volatile_bit_field;
 use crate::volatile_bits::force_expand_volatile_bits;
 
 mod volatile_bits;
 mod volatile_address;
+mod volatile_bit_field;
 
 
 #[proc_macro_attribute]
@@ -28,6 +30,15 @@ pub fn volatile_bits(attributes: TokenStream, input: TokenStream) -> TokenStream
     join(
         proc_macro2::TokenStream::from(input.clone()),
         force_expand_volatile_bits(input, attributes),
+    ).into()
+}
+
+
+#[proc_macro_attribute]
+pub fn volatile_bit_field(attributes: TokenStream, item: TokenStream) -> TokenStream {
+    join(
+        proc_macro2::TokenStream::from(item.clone()),
+        expand_volatile_bit_field(attributes, item),
     ).into()
 }
 

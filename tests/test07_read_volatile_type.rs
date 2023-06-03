@@ -7,7 +7,7 @@ struct Offset1(u64);
 fn main() {
     let buff: [u8; 2] = [0b0000_0101, 0b1];
 
-    let o1 = Offset1::new_unchecked(buff.as_ptr() as u64);
+    let o1 = Offset1::from(buff.as_ptr() as u64);
 
     fn assert_volatile_type<T>(_: T) {
         assert_eq!(core::any::type_name::<T>(), "u8");

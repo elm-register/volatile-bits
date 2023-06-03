@@ -7,7 +7,7 @@ struct OffsetAddr3Bytes(u64);
 fn main() {
     let buff: [u8; 5] = [1, 2, 3, 4, 5];
 
-    let o1 = OffsetAddr3Bytes::new_unchecked(buff.as_ptr() as u64);
+    let o1 = OffsetAddr3Bytes::from(buff.as_ptr() as u64);
     assert_eq!(o1.read_volatile(), 3);
 }
 

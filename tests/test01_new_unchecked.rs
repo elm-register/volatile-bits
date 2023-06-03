@@ -5,5 +5,5 @@ struct Bits(u64);
 
 
 fn main() {
-    let _bits = Bits::new_unchecked(0xFFu64);
+    let _bits = Bits::from(0xFFu64);
 }
