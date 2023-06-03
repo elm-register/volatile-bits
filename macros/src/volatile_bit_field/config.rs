@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 use core::fmt::Debug;
 
 use proc_macro2::{Ident, Span};

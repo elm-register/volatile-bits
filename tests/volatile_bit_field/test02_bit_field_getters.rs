@@ -30,7 +30,6 @@ fn main() {
                0b10000000
     );
 
-
     assert_eq!(field
                    .b2()
                    .read_volatile(),

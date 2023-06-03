@@ -1,3 +1,4 @@
+use alloc::string::ToString;
 use proc_macro2::{Ident, Literal, Span, TokenTree};
 use syn::__private::TokenStream2;
 use crate::volatile_bits::config::attribute::access::AccessMode;

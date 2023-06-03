@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 use proc_macro2::Ident;
 use syn::{Field, Fields, Type};
 use syn::__private::TokenStream2;
