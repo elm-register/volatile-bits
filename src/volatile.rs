@@ -13,7 +13,12 @@ pub trait VolatileBitsReadable<VolatileOut> {
 }
 
 
+#[derive(Debug, Copy, Clone)]
+pub enum WriteErr {
+    ShlOverflow
+}
+
 pub trait VolatileBitsWritable<VolatileIn> {
-    fn write_volatile(&self, new_val: VolatileIn) -> anyhow::Result<()>;
+    fn write_volatile(&self, new_val: VolatileIn) -> core::result::Result<(), WriteErr>;
 }
 

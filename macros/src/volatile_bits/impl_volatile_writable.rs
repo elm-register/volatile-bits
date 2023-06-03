@@ -23,7 +23,7 @@ fn expand_write_volatile(config: &VolatileBitsConfig) -> TokenStream2 {
     let add = attr.add_ref();
 
     quote::quote! {
-        fn write_volatile(&self, new_val: #volatile_ty) -> anyhow::Result<()>{
+        fn write_volatile(&self, new_val: #volatile_ty) -> core::result::Result<(), volatile_bits::WriteErr>{
             volatile_bits::volatile::Builder::new(self.0)
                 .add_addr(#add)
                 .bits(#bits as usize)

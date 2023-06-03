@@ -1,6 +1,7 @@
 use core::marker::PhantomData;
 
 use crate::volatile::config::Config;
+use crate::volatile::WriteErr;
 
 pub struct VolatileWriteOnly<Addr, Volatile> {
     config: Config<Addr>,
@@ -20,11 +21,11 @@ impl<Addr, Volatile> VolatileWriteOnly<Addr, Volatile> {
 }
 
 
-fn mask(max_val: usize, max_bits: usize, bits: usize, offset: usize) -> anyhow::Result<usize> {
+fn mask(max_val: usize, max_bits: usize, bits: usize, offset: usize) -> Result<usize, WriteErr> {
     let bits = max_bits - bits;
     let mask = (max_val >> bits)
         .checked_shl(offset as u32)
-        .ok_or(anyhow::anyhow!("Failed write_volatile overflow"))?;
+        .ok_or(WriteErr::ShlOverflow)?;
 
     Ok(!mask)
 }
@@ -35,7 +36,7 @@ macro_rules! impl_write_only_from_addr {
     ($addr: ty, $volatile: ty) => {
         impl crate::VolatileBitsWritable<$volatile> for VolatileWriteOnly<$addr, $volatile>
             {
-                fn write_volatile(&self, new_val: $volatile) -> anyhow::Result<()> {
+                fn write_volatile(&self, new_val: $volatile) -> core::result::Result<(), crate::WriteErr> {
 
                     let mask = mask(<$volatile>::MAX as usize, <$volatile>::BITS as usize, self.config.bits(), self.config.offset())? as $volatile;
                     let addr = self.config.addr() + self.config.add_addr() as $addr;
@@ -43,7 +44,8 @@ macro_rules! impl_write_only_from_addr {
                     let old_val = unsafe{core::ptr::read_volatile(addr as *const $volatile)};
                     let old_val_mask = old_val & mask;
 
-                    let write_val = new_val.checked_shl(self.config.offset() as u32).ok_or(anyhow::anyhow!("Shl over flow!"))?;
+                    let write_val = new_val.checked_shl(self.config.offset() as u32)
+                        .ok_or(crate::WriteErr::ShlOverflow)?;
 
                     unsafe{core::ptr::write_volatile(addr as *mut $volatile, write_val | old_val_mask);}
                     Ok(())
