@@ -12,4 +12,7 @@ fn it_works() {
     t.pass("tests/test08_read_volatile_with_bits.rs");
     t.pass("tests/test09_read_volatile_with_add_addr.rs");
     t.pass("tests/test10_write_volatile_with_options.rs");
+    t.pass("tests/test11_new_type_address.rs");
+    t.pass("tests/test12_volatile_from_new_type_address.rs");
+    t.pass("tests/test13_impl_hex_for_address.rs");
 }

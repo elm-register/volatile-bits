@@ -1,3 +1,5 @@
+use alloc::string::ToString;
+
 use proc_macro2::{Ident, TokenTree};
 use syn::__private::TokenStream2;
 

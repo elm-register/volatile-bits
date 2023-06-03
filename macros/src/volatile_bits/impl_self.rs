@@ -1,8 +1,8 @@
 use syn::__private::TokenStream2;
+use crate::volatile_bits::config::VolatileBitsConfig;
 
-use crate::config::VolatileBitsConfig;
-use crate::derive_volatile_bits::impl_self::address::expand_address;
-use crate::derive_volatile_bits::impl_self::new_unchecked::expand_new_unchecked;
+use crate::volatile_bits::impl_self::address::expand_address;
+use crate::volatile_bits::impl_self::new_unchecked::expand_new_unchecked;
 
 mod new_unchecked;
 mod address;

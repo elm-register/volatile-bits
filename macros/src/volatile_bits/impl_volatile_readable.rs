@@ -1,6 +1,5 @@
 use syn::__private::TokenStream2;
-
-use crate::config::VolatileBitsConfig;
+use crate::volatile_bits::config::VolatileBitsConfig;
 
 pub fn expand_impl_volatile_readable(config: &VolatileBitsConfig) -> syn::Result<TokenStream2> {
     let struct_name = config.struct_name_ref();

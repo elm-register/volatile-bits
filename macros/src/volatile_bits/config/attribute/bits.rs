@@ -1,3 +1,4 @@
+use alloc::string::ToString;
 use proc_macro2::TokenTree;
 use syn::__private::TokenStream2;
 
@@ -18,6 +19,7 @@ fn parse_bits_value(ty: TokenTree) -> Option<TokenStream2> {
         None
     }
 }
+
 
 fn is_not_bits_attr(tree: &TokenTree) -> bool {
     if let TokenTree::Ident(ident) = tree {

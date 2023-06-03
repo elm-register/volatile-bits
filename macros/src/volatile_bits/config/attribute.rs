@@ -1,10 +1,10 @@
 use proc_macro2::{Ident, Literal, Span};
 use syn::__private::TokenStream2;
 
-use crate::config::attribute::add::parse_add;
-use crate::config::attribute::bits::parse_bits;
-use crate::config::attribute::offset::parse_offset_token;
-use crate::config::attribute::volatile_ty::parse_volatile_ty;
+use crate::volatile_bits::config::attribute::add::parse_add;
+use crate::volatile_bits::config::attribute::bits::parse_bits;
+use crate::volatile_bits::config::attribute::offset::parse_offset_token;
+use crate::volatile_bits::config::attribute::volatile_ty::parse_volatile_ty;
 
 mod offset;
 mod volatile_ty;

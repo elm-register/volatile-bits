@@ -3,7 +3,7 @@ use quote::__private::ext::RepToTokensExt;
 use syn::{Fields, ItemStruct, Type};
 use syn::__private::TokenStream2;
 
-use crate::config::attribute::VolatileBitsAttribute;
+use crate::volatile_bits::config::attribute::VolatileBitsAttribute;
 
 mod attribute;
 

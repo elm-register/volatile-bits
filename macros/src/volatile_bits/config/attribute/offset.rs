@@ -1,3 +1,4 @@
+use alloc::string::ToString;
 use proc_macro2::{Literal, TokenTree};
 use syn::__private::TokenStream2;
 

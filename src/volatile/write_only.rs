@@ -75,7 +75,7 @@ impl_write_only!(u8, u16, u32, u64, usize, u128);
 
 #[cfg(test)]
 mod tests {
-    use crate::{VolatileBitsReadable, VolatileBitsWritable};
+    use crate::{VolatileAddress, VolatileBitsReadable, VolatileBitsWritable};
     use crate::numeric::Numeric;
     use crate::volatile::builder::Builder;
     use crate::volatile::write_only::mask;
@@ -216,7 +216,32 @@ mod tests {
             .build_write_only::<u8>();
 
         b.write_volatile(0b000).unwrap();
-     
+
+        assert_eq!(buff[1], 0b1110_0011)
+    }
+
+
+    #[test]
+    fn it_new_type_address() {
+        struct Address(u64);
+        impl VolatileAddress<u64> for Address {
+            fn address(&self) -> u64 {
+                self.0
+            }
+        }
+
+        let buff: [u8; 3] = [1, 0b1111_1111, 3];
+
+        let addr = Address(buff.as_ptr() as u64);
+
+        let b = Builder::new(addr)
+            .offset(2)
+            .bits(3)
+            .add_addr(0x01)
+            .build_write_only::<u8>();
+
+        b.write_volatile(0b000).unwrap();
+
         assert_eq!(buff[1], 0b1110_0011)
     }
 }

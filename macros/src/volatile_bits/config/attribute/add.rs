@@ -1,3 +1,4 @@
+use alloc::string::ToString;
 use proc_macro2::{Literal, TokenTree};
 use syn::__private::TokenStream2;
 
@@ -21,6 +22,7 @@ fn parse_add_value(ty: TokenTree) -> Option<Literal> {
 
 fn is_not_add_attr(tree: &TokenTree) -> bool {
     if let TokenTree::Ident(ident) = tree {
+        let ident: &proc_macro2::Ident = ident;
         ident.to_string().as_str() != "add"
     } else {
         true
