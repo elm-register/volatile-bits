@@ -21,7 +21,7 @@ impl<Addr, Volatile> VolatileWriteOnly<Addr, Volatile> {
 }
 
 
-fn mask(max_val: usize, max_bits: usize, bits: usize, offset: usize) -> Result<usize, WriteErr> {
+fn mask(max_val: usize, max_bits: usize, bits: usize, offset: usize) -> core::result::Result<usize, WriteErr> {
     let bits = max_bits - bits;
     let mask = (max_val >> bits)
         .checked_shl(offset as u32)

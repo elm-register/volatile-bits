@@ -1,6 +1,6 @@
 use crate::numeric::Numeric;
 
-#[derive(Debug)]
+#[derive(core::fmt::Debug)]
 pub struct Config<Addr> {
     addr: Addr,
     offset: usize,
