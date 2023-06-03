@@ -47,13 +47,25 @@ pub fn volatile_bit_field(attributes: TokenStream, item: TokenStream) -> TokenSt
 fn join_address_derives(item: TokenStream) -> TokenStream2 {
     join(
         quote::quote! {
-            #[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
+            #[derive(
+                core::fmt::Debug,
+                core::marker::Copy,
+                core::clone::Clone,
+                Ord,
+                PartialOrd,
+                Eq,
+                PartialEq,
+                core::hash::Hash
+            )]
             #[repr(transparent)]
         },
         TokenStream2::from(item),
     )
 }
 
+
+#[derive(core::fmt::Debug)]
+struct A;
 
 fn join(lhs: TokenStream2, rhs: TokenStream2) -> TokenStream2 {
     let union = quote::quote! {
