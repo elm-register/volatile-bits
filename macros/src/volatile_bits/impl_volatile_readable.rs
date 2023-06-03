@@ -28,7 +28,7 @@ fn expand_read_volatile(config: &VolatileBitsConfig) -> TokenStream2 {
                 .add_addr(#add)
                 .bits(#bits as usize)
                 .offset(#offset)
-                .build_readonly::<#volatile_ty>()
+                .build_readonly_type_as::<#volatile_ty>()
                 .read_volatile()
         }
     }

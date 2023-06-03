@@ -62,7 +62,7 @@ mod tests {
     fn it_read_volatile() {
         let buff: [u8; 1] = [0x31];
 
-        let v = Builder::new(buff.as_ptr() as u64).build_readonly::<u8>();
+        let v = Builder::new(buff.as_ptr() as u64).build_readonly_type_as::<u8>();
 
         assert_eq!(v.read_volatile(), 0x31);
     }
@@ -74,7 +74,7 @@ mod tests {
 
         let v = Builder::new(buff.as_ptr() as u64)
             .offset(1)
-            .build_readonly::<u8>();
+            .build_readonly_type_as::<u8>();
 
         assert_eq!(v.read_volatile(), 0b100);
     }
@@ -87,7 +87,7 @@ mod tests {
         let v = Builder::new(buff.as_ptr() as u64)
             .offset(1)
             .bits(5)
-            .build_readonly::<u64>();
+            .build_readonly_type_as::<u64>();
 
         assert_eq!(v.read_volatile(), 0b11_011);
     }
@@ -100,7 +100,7 @@ mod tests {
 
         let v = Builder::new(buff.as_ptr() as u64)
             .bits(4)
-            .build_readonly::<u64>();
+            .build_readonly_type_as::<u64>();
 
         assert_eq!(v.read_volatile(), 0b0110);
     }
@@ -112,7 +112,7 @@ mod tests {
 
         let v = Builder::new(buff.as_ptr() as u64)
             .add_addr(1)
-            .build_readonly::<u8>();
+            .build_readonly_type_as::<u8>();
 
         assert_eq!(v.read_volatile(), 2);
     }
@@ -126,7 +126,7 @@ mod tests {
             .add_addr(2)
             .offset(4)
             .bits(3)
-            .build_readonly::<u8>();
+            .build_readonly_type_as::<u8>();
 
         assert_eq!(v.read_volatile(), 0b011);
     }

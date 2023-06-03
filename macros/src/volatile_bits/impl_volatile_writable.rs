@@ -1,4 +1,5 @@
 use syn::__private::TokenStream2;
+
 use crate::volatile_bits::config::VolatileBitsConfig;
 
 pub fn expand_impl_volatile_writable(config: &VolatileBitsConfig) -> syn::Result<TokenStream2> {
@@ -28,7 +29,7 @@ fn expand_write_volatile(config: &VolatileBitsConfig) -> TokenStream2 {
                 .add_addr(#add)
                 .bits(#bits as usize)
                 .offset(#offset)
-                .build_write_only::<#volatile_ty>()
+                .build_write_only_type_as::<#volatile_ty>()
                 .write_volatile(new_val)
         }
     }

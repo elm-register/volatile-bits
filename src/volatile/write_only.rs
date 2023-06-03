@@ -114,11 +114,11 @@ mod tests {
         let buff: [u32; 1] = [0; 1];
 
         let w = Builder::new(buff.as_ptr() as u64)
-            .build_write_only::<u32>();
+            .build_write_only_type_as::<u32>();
         w.write_volatile(0b100).unwrap();
 
         let r = Builder::new(buff.as_ptr() as u64)
-            .build_readonly::<u32>();
+            .build_readonly_type_as::<u32>();
         assert_eq!(r.read_volatile(), 0b100);
     }
 
@@ -132,11 +132,11 @@ mod tests {
 
         let w = builder
             .clone()
-            .build_write_only::<u32>();
+            .build_write_only_type_as::<u32>();
         w.write_volatile(0b100).unwrap();
 
         let r = builder
-            .build_readonly::<u32>();
+            .build_readonly_type_as::<u32>();
         assert_eq!(r.read_volatile(), 0b100);
 
         assert_eq!(buff[0], 0b0100_1001);
@@ -149,7 +149,7 @@ mod tests {
 
         let w = Builder::new(buff.as_ptr() as u64)
             .bits(3)
-            .build_write_only::<u32>();
+            .build_write_only_type_as::<u32>();
         w.write_volatile(0b000).unwrap();
 
         assert_eq!(buff[0], 0b1111_1000);
@@ -163,7 +163,7 @@ mod tests {
         let w = Builder::new(buff.as_ptr() as u64)
             .offset(2)
             .bits(3)
-            .build_write_only::<u16>();
+            .build_write_only_type_as::<u16>();
         w.write_volatile(0b000).unwrap();
 
         assert_eq!(buff[0], 0b1110_0011);
@@ -176,7 +176,7 @@ mod tests {
 
         let w = Builder::new(buff.as_ptr() as u64)
             .add_addr(2)
-            .build_write_only::<u8>();
+            .build_write_only_type_as::<u8>();
 
         w.write_volatile(100).unwrap();
 
@@ -196,7 +196,7 @@ mod tests {
             .add_addr(2)
             .bits(3)
             .offset(5)
-            .build_write_only::<u8>();
+            .build_write_only_type_as::<u8>();
 
         w.write_volatile(0b111).unwrap();
 
@@ -215,7 +215,7 @@ mod tests {
             .offset(2)
             .bits(3)
             .add_addr(0x01)
-            .build_write_only::<u8>();
+            .build_write_only_type_as::<u8>();
 
         b.write_volatile(0b000).unwrap();
 
@@ -225,6 +225,7 @@ mod tests {
 
     #[test]
     fn it_new_type_address() {
+        #[derive(Copy, Clone)]
         struct Address(u64);
         impl VolatileAddress<u64> for Address {
             fn address(&self) -> u64 {
@@ -240,10 +241,21 @@ mod tests {
             .offset(2)
             .bits(3)
             .add_addr(0x01)
-            .build_write_only::<u8>();
+            .build_write_only_type_as::<u8>();
 
         b.write_volatile(0b000).unwrap();
 
         assert_eq!(buff[1], 0b1110_0011)
+    }
+
+
+    #[test]
+    fn it_write_max_value() {
+        let buff: [u32; 1] = [0];
+        let v = Builder::new(buff.as_ptr() as u64)
+            .build_type_as::<u32>();
+
+        v.write_volatile(u32::MAX).unwrap();
+        assert_eq!(v.read_volatile(), u32::MAX);
     }
 }
