@@ -36,12 +36,10 @@ macro_rules! impl_write_only_from_addr {
         impl crate::VolatileBitsWritable<$volatile> for VolatileWriteOnly<$addr, $volatile>
             {
                 fn write_volatile(&self, new_val: $volatile) -> core::result::Result<(), crate::WriteErr> {
-
-                    let add_address = self.config.offset() / 8;
-                    let addr = self.config.addr() + self.config.add_addr() as $addr + add_address as $addr;
+                    let addr = self.config.addr() + self.config.add_addr() as $addr;
 
                     let old_val = unsafe{core::ptr::read_volatile(addr as *const u128)};
-                    let offset = self.config.offset() % 8;
+                    let offset = self.config.offset();
                     let mask = mask(<$volatile>::MAX as usize, <$volatile>::BITS as usize, self.config.bits(), offset)? as u128;
                     let old_val_mask = old_val & mask;
 
@@ -76,10 +74,10 @@ impl_write_only!(u8, u16, u32, u64, usize);
 
 #[cfg(test)]
 mod tests {
+    use crate::{VolatileAddress, VolatileBitsReadable, VolatileBitsWritable};
     use crate::numeric::Numeric;
     use crate::volatile::builder::Builder;
     use crate::volatile::write_only::mask;
-    use crate::{VolatileAddress, VolatileBitsReadable, VolatileBitsWritable};
 
     #[test]
     fn it_mask() {

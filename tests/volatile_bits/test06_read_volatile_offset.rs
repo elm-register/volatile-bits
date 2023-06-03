@@ -9,7 +9,7 @@ struct Offset1(u64);
 struct Offset3(u64);
 
 fn main() {
-    let buff: [u64; 2] = [0b0000_0101, 0b1];
+    let buff: [u64; 2] = [0b0000_0101, 0b0];
 
     let o1 = Offset1::from(buff.as_ptr() as u64);
     assert_eq!(o1.read_volatile(), 0b10);

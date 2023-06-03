@@ -24,12 +24,10 @@ macro_rules! impl_readable_from_addr {
                 let max_bits = <$volatile>::BITS as usize;
                 let mask = <$volatile>::MAX >> (max_bits - self.config.bits());
 
-                let add_addr = (self.config.offset() / 8) as $addr;
+                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr) as *const u128)};
+                let v = v >> self.config.offset();
 
-                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr + add_addr) as *const $volatile)};
-                let v = v >> self.config.offset() % 8;
-
-                v & mask as $volatile
+                v as $volatile & mask as $volatile
             }
         }
     };
@@ -74,6 +72,7 @@ mod tests {
 
         let v = Builder::new(buff.as_ptr() as u64)
             .offset(1)
+            .bits(3)
             .build_readonly_type_as::<u8>();
 
         assert_eq!(v.read_volatile(), 0b100);

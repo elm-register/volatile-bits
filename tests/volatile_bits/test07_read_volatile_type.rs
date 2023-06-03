@@ -5,7 +5,7 @@ struct Offset1(u64);
 
 
 fn main() {
-    let buff: [u8; 2] = [0b0000_0101, 0b1];
+    let buff: [u8; 2] = [0b0000_0101, 0b0];
 
     let o1 = Offset1::from(buff.as_ptr() as u64);
 
