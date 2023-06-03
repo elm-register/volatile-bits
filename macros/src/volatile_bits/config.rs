@@ -19,7 +19,7 @@ impl VolatileBitsConfig {
         Ok(Self {
             struct_name: item.ident.clone(),
             address_ty: address_type(&item.fields)?,
-            volatile_attr: VolatileBitsAttribute::new(attr_tokens).unwrap_or_default(),
+            volatile_attr: VolatileBitsAttribute::new(attr_tokens)?,
         })
     }
 

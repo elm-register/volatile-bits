@@ -1,4 +1,4 @@
-use volatile_bits::{VolatileBitsReadable, VolatileBitsWritable};
+use volatile_bits::VolatileBitsReadable;
 use volatile_bits_macros::{volatile_bit_field, volatile_bits};
 
 #[volatile_bits(bits = 8)]
