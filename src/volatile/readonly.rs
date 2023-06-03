@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
-use crate::volatile::config::Config;
 
+use crate::volatile::config::Config;
 
 #[derive(Debug)]
 pub struct VolatileReadonly<Addr, Volatile> {
@@ -9,9 +9,7 @@ pub struct VolatileReadonly<Addr, Volatile> {
 }
 
 impl<Addr, Volatile> VolatileReadonly<Addr, Volatile> {
-    pub(crate) const fn new(
-        config: Config<Addr>
-    ) -> VolatileReadonly<Addr, Volatile> {
+    pub(crate) const fn new(config: Config<Addr>) -> VolatileReadonly<Addr, Volatile> {
         Self {
             config,
             _marker: PhantomData,
@@ -26,7 +24,11 @@ macro_rules! impl_readable_from_addr {
                 let max_bits = <$volatile>::BITS as usize;
                 let mask = <$volatile>::MAX >> (max_bits - self.config.bits());
 
-                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr) as *const $volatile)} >> self.config.offset();
+                let add_addr = (self.config.offset() / 8) as $addr;
+
+                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr + add_addr) as *const $volatile)};
+                let v = v >> self.config.offset() % 8;
+
                 v & mask as $volatile
             }
         }
@@ -46,12 +48,11 @@ macro_rules! impl_readable {
             impl_readable_from_addr!($addr, u32);
             impl_readable_from_addr!($addr, u64);
             impl_readable_from_addr!($addr, usize);
-            impl_readable_from_addr!($addr, u128);
         )*
     };
 }
 
-impl_readable!(u8, u16, u32, u64, usize, u128);
+impl_readable!(u8, u16, u32, u64, usize);
 
 #[cfg(test)]
 mod tests {
@@ -67,7 +68,6 @@ mod tests {
         assert_eq!(v.read_volatile(), 0x31);
     }
 
-
     #[test]
     fn it_read_volatile_with_offset() {
         let buff: [u8; 1] = [0b1001];
@@ -78,7 +78,6 @@ mod tests {
 
         assert_eq!(v.read_volatile(), 0b100);
     }
-
 
     #[test]
     fn it_read_volatile_with_bits() {
@@ -92,9 +91,7 @@ mod tests {
         assert_eq!(v.read_volatile(), 0b11_011);
     }
 
-
-
-        #[test]
+    #[test]
     fn it_read_volatile_with_bits2() {
         let buff: [u64; 1] = [0b1111_0110];
 
@@ -104,7 +101,6 @@ mod tests {
 
         assert_eq!(v.read_volatile(), 0b0110);
     }
-
 
     #[test]
     fn it_read_volatile_with_add_addr() {
@@ -116,7 +112,6 @@ mod tests {
 
         assert_eq!(v.read_volatile(), 2);
     }
-
 
     #[test]
     fn it_read_volatile_with_all_options() {

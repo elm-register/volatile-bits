@@ -29,20 +29,20 @@ pub enum WriteErr {
 
 
 #[derive(Delegate)]
-pub struct Volatile<Addr, V> {
+pub struct Volatile<Addr, Value> {
     #[to(VolatileBitsReadable)]
-    read: VolatileReadonly<Addr, V>,
+    read: VolatileReadonly<Addr, Value>,
 
     #[to(VolatileBitsWritable)]
-    write: VolatileWriteOnly<Addr, V>,
+    write: VolatileWriteOnly<Addr, Value>,
 }
 
 
-impl<Addr, V> Volatile<Addr, V> {
+impl<Addr, Value> Volatile<Addr, Value> {
     pub(crate) const fn new(
-        read: VolatileReadonly<Addr, V>,
-        write: VolatileWriteOnly<Addr, V>,
-    ) -> Volatile<Addr, V> {
+        read: VolatileReadonly<Addr, Value>,
+        write: VolatileWriteOnly<Addr, Value>,
+    ) -> Volatile<Addr, Value> {
         Self{
             read,
             write
