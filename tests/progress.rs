@@ -16,4 +16,5 @@ fn it_works() {
     t.pass("tests/test12_volatile_from_new_type_address.rs");
     t.pass("tests/test13_impl_hex_for_address.rs");
     t.pass("tests/test14_bit_field_from_address.rs");
+    t.pass("tests/test15_bit_field_getters.rs");
 }

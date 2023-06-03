@@ -21,8 +21,14 @@ fn try_expand_volatile_bit_field(
     let config = VolatileBitFieldConfig::new(attrs, item);
 
     let impl_from = config.expand_impl_from_trait();
+    let impl_getters = config.expand_getters();
+    let ident = config.ident_ref();
 
     Ok(quote::quote! {
+        impl #ident{
+            #impl_getters
+        }
+
         #impl_from
     })
 }

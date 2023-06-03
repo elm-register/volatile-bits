@@ -1,5 +1,6 @@
 use proc_macro2::Ident;
 use syn::{Field, Fields, Type};
+use syn::__private::TokenStream2;
 
 pub fn parse_fields(fields: Fields) -> Vec<NameFieldConfig> {
     fields
@@ -19,7 +20,7 @@ pub struct NameFieldConfig {
 impl NameFieldConfig {
     pub fn new(field: Field) -> Option<Self> {
         Some(Self {
-            ident: field.ident?.clone(),
+            ident: field.ident?,
             ty_ident: field.ty,
         })
     }
@@ -32,5 +33,17 @@ impl NameFieldConfig {
 
     pub const fn ty_ident_ref(&self) -> &Type {
         &self.ty_ident
+    }
+
+
+    pub fn expand_getter(&self) -> TokenStream2 {
+        let ident = self.ident_ref();
+        let ty = self.ty_ident_ref();
+
+        quote::quote! {
+            pub fn #ident(&self) -> &#ty{
+                &self.#ident
+            }
+        }
     }
 }

@@ -46,6 +46,16 @@ impl VolatileBitFieldConfig {
     }
 
 
+    pub fn expand_getters(&self) -> TokenStream2{
+        let getters = self
+            .fields
+            .iter()
+            .map(NameFieldConfig::expand_getter);
+
+        quote::quote!(#(#getters)*)
+    }
+
+
     pub fn expand_impl_from_trait(&self) -> TokenStream2 {
         let fs = self
             .fields
