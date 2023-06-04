@@ -24,10 +24,10 @@ macro_rules! impl_readable_from_addr {
                 let max_bits = <$volatile>::BITS as usize;
                 let mask = <$volatile>::MAX >> (max_bits - self.config.bits());
 
-                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr) as *const u128)};
+                let v = unsafe{core::ptr::read_volatile((self.config.addr() + self.config.add_addr() as $addr) as *const $volatile)};
                 let v = v >> self.config.offset();
 
-                v as $volatile & mask as $volatile
+                v & mask as $volatile
             }
         }
     };

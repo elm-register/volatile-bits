@@ -36,17 +36,16 @@ macro_rules! impl_write_only_from_addr {
         impl crate::VolatileBitsWritable<$volatile> for VolatileWriteOnly<$addr, $volatile>
             {
                 fn write_volatile(&self, new_val: $volatile) -> core::result::Result<(), crate::WriteErr> {
+                                      let mask = mask(<$volatile>::MAX as usize, <$volatile>::BITS as usize, self.config.bits(), self.config.offset())? as $volatile;
                     let addr = self.config.addr() + self.config.add_addr() as $addr;
 
-                    let old_val = unsafe{core::ptr::read_volatile(addr as *const u128)};
-                    let offset = self.config.offset();
-                    let mask = mask(<$volatile>::MAX as usize, <$volatile>::BITS as usize, self.config.bits(), offset)? as u128;
+                    let old_val = unsafe{core::ptr::read_volatile(addr as *const $volatile)};
                     let old_val_mask = old_val & mask;
 
-                    let write_val = (new_val as u128).checked_shl(offset as u32)
+                    let write_val = new_val.checked_shl(self.config.offset() as u32)
                         .ok_or(crate::WriteErr::ShlOverflow)?;
 
-                    unsafe{core::ptr::write_volatile(addr as *mut u128, write_val | old_val_mask);}
+                    unsafe{core::ptr::write_volatile(addr as *mut $volatile, write_val | old_val_mask);}
                     Ok(())
                 }
             }
@@ -242,7 +241,7 @@ mod tests {
         let buff: [u8; 32] = [0; 32];
         let v = Builder::new(buff.as_ptr() as u64)
             .offset(16)
-            .build_type_as::<u8>();
+            .build_type_as::<u32>();
 
         v.write_volatile(1).unwrap();
         assert_eq!(v.read_volatile(), 1);
